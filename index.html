@@ -3,11 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Pages Site</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>LEAD Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        select {
+            height: 40px;
+        }
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to My GitHub Pages Site</h1>
-    <script src="scripts.js"></script>
+    <h1>Customer Inquiry Form</h1>
+    <form id="customerForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <fieldset>
+            <legend>Location</legend>
+            <label for="place">Place:</label>
+            <input type="text" id="place" name="place" required>
+            
+            <label for="taluk">Taluk:</label>
+            <input type="text" id="taluk" name="taluk" required>
+            
+            <label for="district">District:</label>
+            <select id="district" name="district" required>
+                <option value="">Select District</option>
+                <option value="district1">District 1</option>
+                <option value="district2">District 2</option>
+                <option value="district3">District 3</option>
+                <!-- Add more districts as needed -->
+            </select>
+            
+            <label for="state">State:</label>
+            <select id="state" name="state" required>
+                <option value="">Select State</option>
+                <option value="state1">State 1</option>
+                <option value="state2">State 2</option>
+                <option value="state3">State 3</option>
+                <!-- Add more states as needed -->
+            </select>
+            
+            <label for="pin">PIN:</label>
+            <input type="text" id="pin" name="pin" required>
+        </fieldset>
+        
+        <fieldset>
+            <legend>Contact Numbers</legend>
+            <label for="contact1">Contact Number 1:</label>
+            <input type="tel" id="contact1" name="contact1" required>
+            
+            <label for="contact2">Contact Number 2:</label>
+            <input type="tel" id="contact2" name="contact2">
+        </fieldset>
+        
+        <label for="itemOfInterest">Item Looking for:</label>
+        <select id="itemOfInterest" name="itemOfInterest" required>
+            <option value="">Select Item of Interest</option>
+            <option value="newVehicle">New Vehicle</option>
+            <option value="usedVehicle">Used Vehicle</option>
+            <option value="contractsWanted">Contracts Wanted</option>
+            <option value="contractsAvailable">Contracts Available</option>
+            <option value="financeWanted">Finance Wanted</option>
+            <option value="others">Others (Specify)</option>
+        </select>
+        
+        <label for="refName">Ref Name:</label>
+        <input type="text" id="refName" name="refName" required>
+        
+        <label for="refContact">Ref Contact Number:</label>
+        <input type="tel" id="refContact" name="refContact" required>
+        
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- JavaScript to handle form submission -->
+    <script>
+        document.getElementById('customerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                place: document.getElementById('place').value,
+                taluk: document.getElementById('taluk').value,
+                district: document.getElementById('district').value,
+                state: document.getElementById('state').value,
+                pin: document.getElementById('pin').value,
+                contact1: document.getElementById('contact1').value,
+                contact2: document.getElementById('contact2').value,
+                itemOfInterest: document.getElementById('itemOfInterest').value,
+                refName: document.getElementById('refName').value,
+                refContact: document.getElementById('refContact').value
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                const result = await response.json();
+                alert('Form submitted successfully');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error submitting form');
+            }
+        });
+    </script>
 </body>
 </html>
