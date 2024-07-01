@@ -61,7 +61,7 @@
     </style>
 </head>
 <body>
-    <h1>Customer Inquiry Form</h1>
+    <h1>Lead Inquiry Form</h1>
     <form id="customerForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required>
@@ -77,19 +77,11 @@
             <label for="district">District:</label>
             <select id="district" name="district" required>
                 <option value="">Select District</option>
-                <option value="district1">District 1</option>
-                <option value="district2">District 2</option>
-                <option value="district3">District 3</option>
-                <!-- Add more districts as needed -->
             </select>
             
             <label for="state">State:</label>
             <select id="state" name="state" required>
                 <option value="">Select State</option>
-                <option value="state1">State 1</option>
-                <option value="state2">State 2</option>
-                <option value="state3">State 3</option>
-                <!-- Add more states as needed -->
             </select>
             
             <label for="pin">PIN:</label>
@@ -125,9 +117,69 @@
         <button type="submit">Submit</button>
     </form>
 
-    <!-- JavaScript to handle form submission -->
-    <script>
-        document.getElementById('customerForm').addEventListener('submit', async function(event) {
+    <!-- Firebase JavaScript Modular SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js';
+        import { getDatabase, ref, push } from 'https://www.gstatic.com/firebasejs/9.0.1/firebase-database.js';
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyCLg5tODDkwTW0gPwnKXNd8JysYH8AMsrQ",
+        authDomain: "itmanagement-524c7.firebaseapp.com",
+        databaseURL: "https://itmanagement-524c7-default-rtdb.firebaseio.com",
+        projectId: "itmanagement-524c7",
+        storageBucket: "itmanagement-524c7.appspot.com",
+        messagingSenderId: "325321575952",
+        appId: "1:325321575952:web:4f5c54debae4fab6170495",
+        measurementId: "G-LJ8ZKKLJLM"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // Reference to your Firebase Realtime Database
+        const database = getDatabase(app);
+
+        // Populate state dropdown
+        const stateDropdown = document.getElementById('state');
+        const states = [
+            "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat",
+            "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh",
+            "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+            "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh",
+            "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh",
+            "Dadra and Nagar Haveli and Daman and Diu", "Lakshadweep", "Delhi", "Puducherry"
+        ];
+
+        states.forEach(state => {
+            const option = document.createElement('option');
+            option.value = state;
+            option.textContent = state;
+            stateDropdown.appendChild(option);
+        });
+
+        // Populate district dropdown
+        const districtDropdown = document.getElementById('district');
+        const districts = {
+            "Andhra Pradesh": ["Anantapur", "Chittoor", "East Godavari", "Guntur", "Krishna", "Kurnool", "Nellore", "Prakasam", "Srikakulam", "Visakhapatnam", "Vizianagaram", "West Godavari", "YSR Kadapa"],
+            "Arunachal Pradesh": ["Tawang", "West Kameng", "East Kameng", "Papum Pare", "Kurung Kumey", "Kra Daadi", "Lower Subansiri", "Upper Subansiri", "West Siang", "East Siang", "Siang", "Upper Siang", "Lower Siang", "Lower Dibang Valley", "Dibang Valley", "Anjaw", "Lohit", "Namsai", "Changlang", "Tirap", "Longding"],
+            "Assam": ["Baksa", "Barpeta", "Biswanath", "Bongaigaon", "Cachar", "Charaideo", "Chirang", "Darrang", "Dhemaji", "Dhubri", "Dibrugarh", "Goalpara", "Golaghat", "Hailakandi", "Hojai", "Jorhat", "Kamrup", "Kamrup Metropolitan", "Karbi Anglong", "Karimganj", "Kokrajhar", "Lakhimpur", "Majuli", "Morigaon", "Nagaon", "Nalbari", "Dima Hasao", "Sivasagar", "Sonitpur", "South Salmara-Mankachar", "Tinsukia", "Udalguri", "West Karbi Anglong"],
+            // Add districts for other states similarly
+        };
+
+        stateDropdown.addEventListener('change', () => {
+            const selectedState = stateDropdown.value;
+            districtDropdown.innerHTML = ''; // Clear previous options
+            districts[selectedState].forEach(district => {
+                const option = document.createElement('option');
+                option.value = district;
+                option.textContent = district;
+                districtDropdown.appendChild(option);
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('customerForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
             const formData = {
@@ -144,20 +196,13 @@
                 refContact: document.getElementById('refContact').value
             };
 
-            try {
-                const response = await fetch('http://localhost:3000/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                const result = await response.json();
-                alert('Form submitted successfully');
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error submitting form');
-            }
+            // Push form data to Firebase Realtime Database
+            const newRef = push(ref(database, 'inquiries'), formData);
+
+            // Clear form fields
+            document.getElementById('customerForm').reset();
+
+            alert('Form submitted successfully!');
         });
     </script>
 </body>
